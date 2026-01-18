@@ -43,6 +43,12 @@ export interface ForecastDay {
 
 export interface Trail {
     id: string;
+    latitude: number;
+    longitude: number;
+    name: string;
+    difficulty?: string;
+    stars?: number;
+    summary?: string;
     // Add other trail properties as needed based on API response
     [key: string]: unknown;
 }
