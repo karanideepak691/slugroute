@@ -21,7 +21,7 @@ export default function LoginOverlay({ onLogin }: LoginOverlayProps) {
             >
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 text-transparent bg-clip-text">
-                        SlugRoute+
+                        SlugRoute
                     </h1>
                     <p className="text-gray-400 text-sm mt-2">Sign in to find routes & buddies.</p>
                 </div>

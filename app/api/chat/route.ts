@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
 
         // Construct System Prompt with Context
         const systemPrompt = `
-You are 'Gemini Guide', an intelligent AI assistant for the 'SlugRoute+' navigation app at UC Santa Cruz.
+You are 'Gemini Guide', an intelligent AI assistant for the 'SlugRoute' navigation app at UC Santa Cruz.
 Your goal is to help users navigate, find friends, and check weather conditions.
 
 CURRENT APP CONTEXT:
@@ -50,7 +50,7 @@ RULES:
                 },
                 {
                     role: "model",
-                    parts: [{ text: "Understood. I am Gemini Guide, ready to assist on SlugRoute+." }],
+                    parts: [{ text: "Understood. I am Gemini Guide, ready to assist on SlugRoute." }],
                 },
             ],
         });
@@ -75,7 +75,7 @@ RULES:
                     messages: [
                         {
                             role: "system", content: `
-You are 'Gemini Guide', an intelligent AI assistant for the 'SlugRoute+' navigation app at UC Santa Cruz.
+You are 'Gemini Guide', an intelligent AI assistant for the 'SlugRoute' navigation app at UC Santa Cruz.
 Your goal is to help users navigate, find friends, and check weather conditions.
 
 CURRENT APP CONTEXT:

@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SlugRoute+ | Campus Navigation",
+  title: "SlugRoute | Campus Navigation",
   description: "Advanced campus navigation for UCSC",
 };
 
