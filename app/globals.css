@@ -1,26 +1,101 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* New Earth & Slug Palette */
+    --background: 30 25% 88%;
+    /* #EAE0D5 (Beige) */
+    --foreground: 30 15% 25%;
+    /* #4A4036 (Dark Brown) */
+
+    --card: 105 20% 73%;
+    /* #B2C9AB (Sage Green) */
+    --card-foreground: 30 15% 25%;
+    /* Dark Brown text on cards */
+
+    --popover: 105 20% 73%;
+    --popover-foreground: 30 15% 25%;
+
+    --primary: 34 31% 41%;
+    /* #8B6E48 (Earth Brown - Action) */
+    --primary-foreground: 30 25% 94%;
+    /* Light Beige text */
+
+    --secondary: 45 90% 60%;
+    /* Existing Yellow Brand color if needed, or muted sage */
+    --secondary-foreground: 30 15% 25%;
+
+    --muted: 30 10% 80%;
+    --muted-foreground: 30 10% 40%;
+
+    --accent: 45 90% 60%;
+    /* Brand Yellow */
+    --accent-foreground: 30 15% 10%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 30 15% 70%;
+    --input: 30 15% 70%;
+    --ring: 34 31% 41%;
+
+    --radius: 0.75rem;
+    /* Slightly softer radius */
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom Utilities for Glassmorphism (Sage Glass) */
+.glass {
+  background: rgba(178, 201, 171, 0.4);
+  /* #B2C9AB with opacity */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  /* Softer shadow */
+}
+
+/* Darker glass for contrast areas if needed */
+.glass-dark {
+  background: rgba(74, 64, 54, 0.8);
+  /* #4A4036 */
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #F8F5F2;
 }
