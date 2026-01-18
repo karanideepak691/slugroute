@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import clsx from 'clsx';
@@ -41,6 +41,7 @@ export default function Dashboard() {
   const [windData, setWindData] = useState<WindData>({ speed: 0, direction: 0, temp: 15, condition: 'Sunny' });
   const [explanation, setExplanation] = useState<string | null>(null);
   const [loadingAudio, setLoadingAudio] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // TABS: 'community' (used for logic referencing the tab, even if tab bar is gone)
   const [activeTab, setActiveTab] = useState<'community'>('community');
@@ -368,9 +369,22 @@ export default function Dashboard() {
 
       const contentType = res.headers.get('content-type');
       if (contentType && contentType.includes('audio/mpeg')) {
+        // Stop previous audio if playing
+        if (audioRef.current) {
+          audioRef.current.pause();
+          audioRef.current.currentTime = 0;
+        }
+
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
         const audio = new Audio(url);
+        audioRef.current = audio;
+
+        audio.onended = () => {
+          URL.revokeObjectURL(url); // Cleanup
+          audioRef.current = null;
+        };
+
         audio.play();
       }
     } catch (e) { console.error(e); } finally { setLoadingAudio(false); }
