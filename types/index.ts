@@ -44,5 +44,5 @@ export interface ForecastDay {
 export interface Trail {
     id: string;
     // Add other trail properties as needed based on API response
-    [key: string]: any;
+    [key: string]: unknown;
 }

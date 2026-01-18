@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
         const rawPoints = data.forecasts?.[0] || [];
 
         // Helper to process a point
-        const processPoint = (p: any, i: number) => {
+        const processPoint = (p: any, i: number) => { // eslint-disable-line @typescript-eslint/no-explicit-any
             const u = p.wind_u_10m ?? 0;
             const v = p.wind_v_10m ?? 0;
             const temp = p.temperature_2m ?? 0;
@@ -72,13 +72,13 @@ export async function GET(request: NextRequest) {
             };
         };
 
-        const forecast = rawPoints.slice(0, 5).map((p: any, i: number) => processPoint(p, i));
+        const forecast = rawPoints.slice(0, 5).map((p: any, i: number) => processPoint(p, i)); // eslint-disable-line @typescript-eslint/no-explicit-any
 
         // Current (first point)
         const current = rawPoints[0] || {};
         const u = current.wind_u_10m ?? 0;
         const v = current.wind_v_10m ?? 0;
-        let dir = (Math.atan2(v, u) * 180) / Math.PI;
+        const dir = (Math.atan2(v, u) * 180) / Math.PI;
         const metDir = ((dir + 360) % 360 + 180) % 360;
 
         return NextResponse.json({
