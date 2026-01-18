@@ -354,6 +354,37 @@ export default function Dashboard() {
     { id: 'eastfield', name: "East Field", icon: "⚽", coords: [36.9920, -122.0550], time: "Yesterday" }
   ];
 
+  // Comprehensive Campus Locations for Search
+  const CAMPUS_LOCATIONS = [
+    { name: "Science & Engineering Library", coords: [36.9990, -122.0620], category: "Library" },
+    { name: "Jack Baskin Engineering", coords: [36.9997, -122.0620], category: "Academic" },
+    { name: "Porter College", coords: [36.9940, -122.0650], category: "College" },
+    { name: "Kresge College", coords: [36.9970, -122.0660], category: "College" },
+    { name: "Stevenson College", coords: [36.9960, -122.0550], category: "College" },
+    { name: "Cowell College", coords: [36.9970, -122.0530], category: "College" },
+    { name: "OPERS / East Field", coords: [36.9920, -122.0550], category: "Sports" },
+    { name: "Quarry Plaza", coords: [36.9980, -122.0580], category: "Dining" },
+    { name: "Social Sciences 1", coords: [36.9950, -122.0620], category: "Academic" },
+    { name: "Natural Sciences 2", coords: [37.0005, -122.0615], category: "Academic" },
+    { name: "Oakes College", coords: [36.9890, -122.0660], category: "College" },
+    { name: "College Nine", coords: [37.0000, -122.0570], category: "College" },
+    { name: "College Ten", coords: [37.0005, -122.0580], category: "College" },
+  ];
+
+  // Filtered Results
+  const filteredPlaces = useMemo(() => {
+    if (!searchQuery) return [];
+    return CAMPUS_LOCATIONS.filter(p =>
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.category.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [searchQuery]);
+
+  const filteredRecent = useMemo(() => {
+    if (!searchQuery) return RECENT_PLACES;
+    return RECENT_PLACES.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  }, [searchQuery]);
+
   // AUDIO & HELPER FUNCTIONS
   const handleAudio = async (text?: string) => {
     if (loadingAudio || isMuted) return;
@@ -773,68 +804,109 @@ export default function Dashboard() {
                     exit={{ opacity: 0, y: 10, scale: 0.98 }}
                     className="mt-2 bg-[#EAE0D5]/95 backdrop-blur-xl rounded-2xl shadow-xl border border-[#4A4036]/10 overflow-hidden max-h-[60vh] overflow-y-auto"
                   >
-                    {/* Recent Searches */}
-                    <div className="p-2">
-                      <h3 className="text-[10px] font-bold uppercase tracking-wider text-[#4A4036]/40 px-3 py-2">Recent</h3>
-                      {RECENT_PLACES.map((place) => (
-                        <button
-                          key={place.id}
-                          onClick={() => {
-                            setSearchQuery(place.name);
-                            setCustomMarkers({ start: null, end: place.coords as [number, number] });
-                            handleAudio(`Destination set to ${place.name}. Select start point.`);
+                    {/* Search Results (When typing) */}
+                    {searchQuery && filteredPlaces.length > 0 && (
+                      <div className="p-2 border-b border-[#4A4036]/10">
+                        <h3 className="text-[10px] font-bold uppercase tracking-wider text-[#4A4036]/40 px-3 py-2">Search Results</h3>
+                        {filteredPlaces.map((place, i) => (
+                          <button
+                            key={i}
+                            onClick={() => {
+                              setSearchQuery(place.name);
+                              setCustomMarkers({ start: CURRENT_LOCATION, end: place.coords as [number, number] });
+                              setAppMode('ROUTE_PLANNING');
+                              setPlanningStep('points_set');
+                              setIsStartLocationFixed(true);
+                              handleAudio(`Destination set to ${place.name} from current location.`);
+                              setIsSearchFocused(false);
+                            }}
+                            className="w-full flex items-center gap-3 p-3 hover:bg-[#B2C9AB]/20 rounded-xl transition-colors text-left group"
+                          >
+                            <div className="bg-[#B2C9AB]/30 p-2 rounded-lg text-[#4A4036] group-hover:bg-[#B2C9AB] transition-colors">
+                              <MapPin className="w-4 h-4" />
+                            </div>
+                            <div>
+                              <div className="font-bold text-[#4A4036] text-sm">{place.name}</div>
+                              <div className="text-[10px] text-[#4A4036]/60">{place.category}</div>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
 
-                            // Optional: Close dropdown but keep search bar filled?
-                            // Requirement: "Clicking a recent item should autofill... and set it as destination"
-                            setIsSearchFocused(false);
-                          }}
-                          className="w-full flex items-center gap-3 p-3 hover:bg-[#B2C9AB]/20 rounded-xl transition-colors text-left group"
-                        >
-                          <div className="bg-[#B2C9AB]/30 p-2 rounded-lg text-[#4A4036] group-hover:bg-[#B2C9AB] transition-colors">
-                            <Clock className="w-4 h-4" />
-                          </div>
-                          <div>
-                            <div className="font-bold text-[#4A4036] text-sm">{place.name}</div>
-                            <div className="text-[10px] text-[#4A4036]/60">{place.time}</div>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
+                    {/* No Results Fallback */}
+                    {searchQuery && filteredPlaces.length === 0 && (
+                      <div className="p-6 text-center">
+                        <p className="text-[#4A4036]/60 text-sm">No campus locations found for "{searchQuery}"</p>
+                      </div>
+                    )}
+
+                    {/* Recent Searches */}
+                    {(!searchQuery || filteredRecent.length > 0) && (
+                      <div className="p-2">
+                        <h3 className="text-[10px] font-bold uppercase tracking-wider text-[#4A4036]/40 px-3 py-2">{searchQuery ? "Recent Matches" : "Recent"}</h3>
+                        {filteredRecent.map((place) => (
+                          <button
+                            key={place.id}
+                            onClick={() => {
+                              setSearchQuery(place.name);
+                              setCustomMarkers({ start: CURRENT_LOCATION, end: place.coords as [number, number] });
+                              setAppMode('ROUTE_PLANNING');
+                              setPlanningStep('points_set');
+                              setIsStartLocationFixed(true);
+                              handleAudio(`Destination set to ${place.name}.`);
+                              setIsSearchFocused(false);
+                            }}
+                            className="w-full flex items-center gap-3 p-3 hover:bg-[#B2C9AB]/20 rounded-xl transition-colors text-left group"
+                          >
+                            <div className="bg-[#B2C9AB]/30 p-2 rounded-lg text-[#4A4036] group-hover:bg-[#B2C9AB] transition-colors">
+                              <Clock className="w-4 h-4" />
+                            </div>
+                            <div>
+                              <div className="font-bold text-[#4A4036] text-sm">{place.name}</div>
+                              <div className="text-[10px] text-[#4A4036]/60">{place.time}</div>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
 
                     {/* Weather Suggestions */}
-                    <div className="p-2 border-t border-[#4A4036]/10">
-                      <div className="flex items-center justify-between px-3 py-2">
-                        <h3 className="text-[10px] font-bold uppercase tracking-wider text-[#4A4036]/40">Suggested for {windData.condition}</h3>
-                        <div className="bg-[#B2C9AB] text-[10px] font-bold px-2 py-0.5 rounded-full text-[#4A4036]">{toF(windData.temp)}°F</div>
-                      </div>
+                    {!searchQuery && (
+                      <div className="p-2 border-t border-[#4A4036]/10">
+                        <div className="flex items-center justify-between px-3 py-2">
+                          <h3 className="text-[10px] font-bold uppercase tracking-wider text-[#4A4036]/40">Suggested for {windData.condition}</h3>
+                          <div className="bg-[#B2C9AB] text-[10px] font-bold px-2 py-0.5 rounded-full text-[#4A4036]">{toF(windData.temp)}°F</div>
+                        </div>
 
-                      {getActivities().map((act, i) => (
-                        <button
-                          key={i}
-                          onClick={() => {
-                            setSearchQuery(act.title);
-                            setCustomMarkers({ start: CURRENT_LOCATION, end: act.coords as [number, number] });
-                            setAppMode('ROUTE_PLANNING');
-                            setPlanningStep('points_set');
-                            setIsStartLocationFixed(true);
-                            handleAudio(`Destination set to ${act.title} from current location.`);
-                            setIsSearchFocused(false);
-                          }}
-                          className="w-full flex items-start gap-3 p-3 hover:bg-[#B2C9AB]/20 rounded-xl transition-colors text-left group"
-                        >
-                          <div className="text-xl bg-[#FFFFFF]/40 p-2 rounded-lg group-hover:bg-[#FFFFFF]/80 transition-colors">
-                            {act.icon}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between">
-                              <div className="font-bold text-[#4A4036] text-sm truncate">{act.title}</div>
-                              <span className="text-[10px] text-[#4A4036]/60">1.2 mi</span>
+                        {getActivities().map((act, i) => (
+                          <button
+                            key={i}
+                            onClick={() => {
+                              setSearchQuery(act.title);
+                              setCustomMarkers({ start: CURRENT_LOCATION, end: act.coords as [number, number] });
+                              setAppMode('ROUTE_PLANNING');
+                              setPlanningStep('points_set');
+                              setIsStartLocationFixed(true);
+                              handleAudio(`Destination set to ${act.title} from current location.`);
+                              setIsSearchFocused(false);
+                            }}
+                            className="w-full flex items-start gap-3 p-3 hover:bg-[#B2C9AB]/20 rounded-xl transition-colors text-left group"
+                          >
+                            <div className="text-xl bg-[#FFFFFF]/40 p-2 rounded-lg group-hover:bg-[#FFFFFF]/80 transition-colors">
+                              {act.icon}
                             </div>
-                            <div className="text-xs text-[#4A4036]/70 line-clamp-1">{act.desc}</div>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between">
+                                <div className="font-bold text-[#4A4036] text-sm truncate">{act.title}</div>
+                                <span className="text-[10px] text-[#4A4036]/60">1.2 mi</span>
+                              </div>
+                              <div className="text-xs text-[#4A4036]/70 line-clamp-1">{act.desc}</div>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>
