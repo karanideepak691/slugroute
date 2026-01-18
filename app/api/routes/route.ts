@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 // UCSC DEMO ROUTES (Science Hill -> Stevenson)
 // Mocking the geometry (lat/lons) for the demo.

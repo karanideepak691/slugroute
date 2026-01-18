@@ -10,9 +10,9 @@ import ChatWidget from '@/components/ChatWidget';
 import { Route, Buddy, Activity, WindData, Trail } from '@/types';
 import { useUser } from '@auth0/nextjs-auth0';
 import {
-  Sun, Cloud, CloudRain, Wind, Thermometer, Droplets,
-  MapPin, PersonStanding, Bike, MessageSquare,
-  Navigation, Users, CloudSun, Eye, Zap, Search,
+  Sun, Wind, Thermometer, Droplets,
+  MapPin, PersonStanding, Bike,
+  Navigation, Users, Zap, Search,
   ChevronRight, Play, Info, LogOut, LogIn, X, Clock,
   Volume2, VolumeX, Mic, Check
 } from 'lucide-react';

@@ -18,7 +18,7 @@ interface MapProps {
     userLocation?: [number, number];
 }
 
-export default function MapComponent({ routes, trails = [], buddies = [], selectedRouteId, windDirection, windSpeed, onMapClick, customMarkers, userLocation }: MapProps) {
+export default function MapComponent({ routes, trails = [], buddies = [], selectedRouteId, onMapClick, customMarkers, userLocation }: MapProps) {
     const mapRef = useRef<MapRef>(null);
     const [popupInfo, setPopupInfo] = useState<Trail | null>(null);
 
